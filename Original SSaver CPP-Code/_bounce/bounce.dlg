@@ -1,0 +1,37 @@
+DLGINCLUDE 1 "bounce.h"
+
+DLGTEMPLATE IDD_CONFIGURE LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "Module configuration", IDD_CONFIGURE, 54, -3, 180, 135, 
+            WS_VISIBLE, FCF_TITLEBAR
+    BEGIN
+        CONTROL         "", IDC_COUNT, 84, 90, 30, 12, WC_SPINBUTTON, 
+                        SPBS_ALLCHARACTERS | SPBS_NUMERICONLY | SPBS_MASTER | 
+                        SPBS_SERVANT | SPBS_JUSTDEFAULT | SPBS_JUSTRIGHT | 
+                        WS_GROUP | WS_TABSTOP | WS_VISIBLE
+        LTEXT           "Clear count", -1, 25, 92, 50, 8
+        CONTROL         "", IDC_SPEED, 104, 7, 44, 32, WC_SLIDER, 
+                        SLS_HORIZONTAL | SLS_VERTICAL | SLS_CENTER | 
+                        SLS_LEFT | SLS_SNAPTOINCREMENT | SLS_HOMELEFT | 
+                        SLS_PRIMARYSCALE1 | WS_GROUP | WS_TABSTOP | 
+                        WS_VISIBLE
+                        CTLDATA 12, 0, 5, 0, 0, 0
+        LTEXT           "Animation speed", IDC_SPEEDTEXT, 102, 42, 74, 8, 
+                        NOT WS_GROUP
+        LTEXT           "ScreenSaver module", -1, 39, 117, 118, 8
+        DEFPUSHBUTTON   "OK", IDS_MODULENAME, 12, 6, 40, 14
+        PUSHBUTTON      "Cancel", IDC_CANCEL, 58, 6, 40, 14
+        AUTOCHECKBOX    "Module enabled", IDC_ENABLED, 12, 28, 79, 10, 
+                        WS_GROUP
+        ICON            IDR_ICON, -1, 12, 110, 20, 16, WS_GROUP
+        LTEXT           "(C) 1994 Nicole Greiber", -1, 39, 109, 115, 8
+                        PRESPARAMS PP_FOREGROUNDCOLOR, 0x00FF0000L
+        CONTROL         "", IDC_COLOR, 84, 70, 30, 12, WC_SPINBUTTON, 
+                        SPBS_ALLCHARACTERS | SPBS_NUMERICONLY | SPBS_MASTER | 
+                        SPBS_SERVANT | SPBS_JUSTDEFAULT | SPBS_JUSTRIGHT | 
+                        WS_GROUP | WS_TABSTOP | WS_VISIBLE
+        LTEXT           "Color count", -1, 25, 72, 52, 8
+        AUTOCHECKBOX    "Blank Screen First", IDC_BLANKSCREEN, 12, 52, 123, 
+                        10
+    END
+END

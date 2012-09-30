@@ -1,0 +1,16 @@
+#include <os2.h>
+#include "galaxy.h"
+
+ICON	IDR_ICON	"galaxy.ico"
+
+/*
+	$$$$$ change code here $$$$$
+	Replace "Sample module" with a module name of your choice.
+	The module name must not exceed 32 characters.
+	Include the module *.DLG-file.
+*/
+STRINGTABLE
+{
+	IDS_MODULENAME	"Galaxy"
+}
+RCINCLUDE galaxy.dlg

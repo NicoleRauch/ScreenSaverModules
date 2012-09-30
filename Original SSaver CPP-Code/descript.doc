@@ -1,0 +1,99 @@
+Fertige Module:
+
+life.ssm	(Life):
+	This module displays the game of life. You can either select
+	a random population to start with, or a "Gleiterkanone".
+	The principle is that the screen is divided into cells. In the
+	"Module Configuration" window you can select how many cells will
+	be displayed in the horizontal direction. The more cells there
+	are, the slower the animation will be. Every cell has 8 neighbors,
+	like this:
+					NNN
+					NCN
+					NNN
+
+	where C is the cell and N are the neighbors. When a cell has
+	two or three neighbors that are "alive" (displayed white), it will
+	also come to life or stay alive if it has been alive before. If 
+	there are more or less living neighbors, it will die.
+
+	The "Gleiterkanone" (glider cannon( is a special kind of "animal": 
+	It always returns to its original shape, and it produces little
+	"gliders" that flap across the screen.
+
+
+4colprob.ssm (4 Colour-Problem):
+
+	This module represents a well-known mathematical problem: to colour
+	a given map with 4 colours so that two neighbouring fields always
+	have different colours. 
+	For this problem a map is needed, therefore several steps are necessary:
+
+	First, a number of random points is created (the number can be varied
+	between 5 and 75 in the "Module Configuration" window). Then the
+	screen is triangulated, that means the given points are used to
+	create triangles (this is called Delaunay-Triangulation). 
+
+	After that the screen is divided into sections, of which every 
+	section encloses one of the random points and every pel on the screen 
+	that is closer to the random point than to any of the other random points 
+	(this is called a Voronj-diagram). This diagram represents the map to be
+	coloured. 
+
+	You will notice that there may be five colours: red, blue, green,
+	yellow and light blue. The light blue fields are "wrongly-coloured" 
+	fields, and after all fields have been coloured, the light blue 
+	fields will be eliminated one after the other by swapping colours with
+	one of their neighbouring fields and thus finding a field where only three
+	colours are represented in the neighbouring fields. Then this field
+	can get the fourth colour, and the light blue colour is no longer
+	needed. When all "wrong" fields have changed their colours, the process
+	is terminated and you can see a map that is coloured according to the
+	4 colour-problem. 
+	Sometimes the light blue can't be eliminated at the first attempt. 
+	Then the whole map is coloured anew, and the program tries again.
+
+numlock.ssm (Numlock Blinker):
+	When this module is active, you will not see anything on the screen -
+	but watch your keyboard!
+
+	CAUTION: 
+	You should not stop this module by pressing Num Lock, Scroll
+	Lock or Shift because then the key may change its mode. This is not
+	my fault because when the module is started, it saves the state of
+	the lamps, and before it exits it restores this state. But when the
+	state of a key is changed in between, the module will still restore 
+	the lamp's state as it was at start time because 
+	the main ssaver program only notifies the module that a key was pressed
+	but not which one.
+	If you already ran into trouble due to this problem, you can do the
+	following:
+	If you have problems with the Caps lock key, just deactivate it and
+	activate it once again. It will then work fine.
+	If one of the two other keys causes a problem, just run the module
+	and stop it with that key once again. The procedure will
+	be reverted and everything's fine again.
+
+bounce.ssm (Bouncing Line):
+	Here you see a bouncing line that changes its colours. You can select
+	how many lines will be visible and how many lines will be coloured in
+	the same colour. On startup, the screen can be painted black or left
+	as it is.
+
+space.ssm (Space Flight):
+	You will fly through space, the final frontier! Choose speed and
+	star density as you like. When this module is run with
+	"Low Priority" unchecked, the animation will be smoother.
+
+Halbfertige Module:
+
+goodbye2
+_goodbye
+whirl 
+
+Unfertige Module:
+
+fraktal
+fressk„fer
+wasserwellen
+wandernde Fenster

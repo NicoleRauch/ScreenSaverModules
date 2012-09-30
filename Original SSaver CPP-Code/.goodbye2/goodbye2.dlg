@@ -1,0 +1,29 @@
+DLGINCLUDE 1 "goodbye.h"
+
+DLGTEMPLATE IDD_CONFIGURE LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "Module configuration", IDD_CONFIGURE, 42, 18, 180, 112, 
+            WS_VISIBLE, FCF_TITLEBAR
+    BEGIN
+        CONTROL         "", IDC_SPEED, 104, 6, 44, 32, WC_SLIDER, 
+                        SLS_HORIZONTAL | SLS_VERTICAL | SLS_CENTER | 
+                        SLS_LEFT | SLS_SNAPTOINCREMENT | SLS_HOMELEFT | 
+                        SLS_PRIMARYSCALE1 | WS_GROUP | WS_TABSTOP | 
+                        WS_VISIBLE
+                        CTLDATA 12, 0, 5, 0, 0, 0
+        LTEXT           "Animation speed", IDC_SPEEDTEXT, 12, 30, 82, 8, NOT 
+                        WS_GROUP
+        LTEXT           "ScreenSaver module", -1, 39, 98, 118, 8
+        LTEXT           "(C) 1993-94 Siegfried Hanisch", -1, 39, 90, 136, 8, 
+                        NOT WS_GROUP
+        DEFPUSHBUTTON   "OK", IDS_MODULENAME, 12, 6, 40, 14
+        PUSHBUTTON      "Cancel", IDC_CANCEL, 54, 6, 40, 14
+        AUTOCHECKBOX    "Module enabled", IDC_ENABLED, 12, 42, 118, 10, 
+                        WS_GROUP
+        ICON            IDR_ICON, -1, 12, 90, 20, 16, WS_GROUP
+        AUTORADIOBUTTON "Straight Walk", IDC_SOBER, 12, 72, 80, 10, 
+                        WS_TABSTOP
+        AUTORADIOBUTTON """Drunken Sailor""", IDC_DRUNKEN, 12, 62, 136, 10, 
+                        WS_TABSTOP
+    END
+END

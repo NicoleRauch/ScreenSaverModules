@@ -1,0 +1,13 @@
+
+       OS/2 Upload Information Template for ftp-os2.nmsu.edu
+
+Archive Name: ssavrmod.zip
+Program Description: Five Modules for SSaver Ver. 1.2 by Siegfried Hanisch
+Operating System: OS/2 2.x
+Program Source: greiber@wrcs3.urz.uni-wuppertal.de
+Replaces:
+Your name: Nicole Greiber
+Your email address: greiber@wrcs3.urz.uni-wuppertal.de
+
+Proposed directory for placement: 32bit/graphics
+

@@ -1,0 +1,22 @@
+/*
+	life.rc
+	life saver module resource script file
+	(C) 1994 Nicole Greiber
+*/
+
+#include <os2.h>
+#include "life.h"
+
+ICON	IDR_ICON	"life.ico"
+
+/*
+	$$$$$ change code here $$$$$
+	Replace "Sample module" with a module name of your choice.
+	The module name must not exceed 32 characters.
+	Include the module *.DLG-file.
+*/
+STRINGTABLE
+{
+	IDS_MODULENAME	"Life"
+}
+RCINCLUDE life.dlg

@@ -1,0 +1,30 @@
+DLGINCLUDE 1 "D:\source\ss\did.h"
+
+DLGTEMPLATE IDD_CONFIGURE LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "Module configuration", IDD_CONFIGURE, 42, 18, 180, 100, 
+            WS_VISIBLE, FCF_TITLEBAR
+    BEGIN
+        CONTROL         "", IDC_COUNT, 64, 54, 30, 12, WC_SPINBUTTON, 
+                        SPBS_ALLCHARACTERS | SPBS_NUMERICONLY | SPBS_MASTER | 
+                        SPBS_SERVANT | SPBS_JUSTDEFAULT | SPBS_JUSTRIGHT | 
+                        WS_GROUP | WS_TABSTOP | WS_VISIBLE
+        LTEXT           "Clear count", -1, 12, 56, 50, 8
+        CONTROL         "", IDC_SPEED, 104, 6, 44, 32, WC_SLIDER, 
+                        SLS_HORIZONTAL | SLS_VERTICAL | SLS_CENTER | 
+                        SLS_LEFT | SLS_SNAPTOINCREMENT | SLS_HOMELEFT | 
+                        SLS_PRIMARYSCALE1 | WS_GROUP | WS_TABSTOP | 
+                        WS_VISIBLE
+                        CTLDATA 12, 0, 5, 0, 0, 0
+        LTEXT           "Animation speed", IDC_SPEEDTEXT, 12, 30, 82, 8, NOT 
+                        WS_GROUP
+        LTEXT           "ScreenSaver module", -1, 40, 84, 118, 8
+        LTEXT           "(C) 1993-94 Siegfried Hanisch", -1, 40, 76, 136, 8, 
+                        NOT WS_GROUP
+        DEFPUSHBUTTON   "OK", IDC_OK, 12, 6, 40, 14
+        PUSHBUTTON      "Cancel", IDC_CANCEL, 54, 6, 40, 14
+        AUTOCHECKBOX    "Module enabled", IDC_ENABLED, 12, 42, 118, 10, 
+                        WS_GROUP
+        ICON            10001, -1, 12, 76, 20, 16, WS_GROUP
+    END
+END

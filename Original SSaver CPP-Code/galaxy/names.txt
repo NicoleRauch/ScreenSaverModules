@@ -1,0 +1,42 @@
+Alpha Centauri       Centaur          4.3
+Barnards Pfeilstern  Ophiuchus        5.3
+Wolf 359             L”we             7.7
+Luyten 726-8         Walfisch         7.9
+Lalande 21185        Groáer B„r       8.2
+Sirius               Groáer Hund      8.7
+Ross 154             Schtze          9.3
+Ross 248             Andromeda       10.3
+Epsilon Eridani      Eridanus        10.8
+Ross 128             Jungfrau        10.9
+61 Cygni             Schwan          11.1
+Luyten 789-6         Wassermann      11.2
+Procyon              Kleiner Hund    11.3
+Epsilon Indi         Indianer        11.4
+Epsilon 2398         Drache          11.6
+Groombridge 34       Andromeda       11.7
+Tau Ceti             Walfisch        11.8
+Lacaille 9352        Sdlicher Fisch 11.9
+BD+5ø1668            Kleiner Hund    12.4
+Luyten 725-32        Walfisch        12.5
+Lacaille 8760        Mikroskop       12.8
+Kapteyns Stern       Maler           13.0
+Krger 60            Cepheus         13.1
+Ross 614             Einhorn         13.1
+BD-12ø4523           Schlangent„ger  13.4
+van Maanens Stern    Fische          13.8
+Wolf 424             Jungfrau        14.6
+Groombridge 1618     Groáer B„r      14.7
+CD-37ø15492          Bildhauer       14.9
+CD-46ø11540          Altar           15.3
+BD+20ø2465           L”we            15.4
+CD-44ø11909          Skorpion        15.6
+CD-49ø13515          Kranich         15.6
+AOe 17415-6          Drache          15.8
+Ross 780             Wassermann      15.8
+Lalande 25372        Boot            15.9
+CC 658               Fliege          16.0
+Sigma Eridani        Eridanus        16.3
+70 Ophiuchi          Schlangentr„ger 16.4
+Atair                Adler           16.5
+BD+43ø4305           Eidechse        16.5
+AC 79ø3888           Giraffe         16.6

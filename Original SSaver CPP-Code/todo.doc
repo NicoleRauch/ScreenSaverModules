@@ -1,0 +1,7 @@
+.c			Code einsetzen
+.def		Modulnamen einsetzen
+.dlg		Nichts! (Macht der DLG-Editor)
+.h			Definierte Konstanten einfÅgen (IDC_...)
+.rc		#include, Modulnamen, RCINCLUDE, Iconnamen
+.res		mit dlgedit bearbeiten
+makefile	Modulnamen einsetzen, Iconnamen durch Modulnamen ersetzen

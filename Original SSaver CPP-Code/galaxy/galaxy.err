@@ -1,0 +1,13 @@
+
+IBM(R) Linker for OS/2(R), Version 01.00.05
+(C) Copyright IBM Corporation 1988, 1995.
+(C) Copyright Microsoft Corp. 1988, 1989.
+ - Licensed Material - Program-Property of IBM - All Rights Reserved.
+
+Object Modules [.obj]: /NOE   +
+Object Modules [.obj]: "galaxy.obj"
+Run File [galaxy.*]: "galaxy.ssm"
+Map File [galaxy.map]: ""
+Libraries [.lib]: 
+Definitions File [nul.def]: "galaxy.def"
+ILink : warning LNK4045: name of output file is "galaxy.ssm"

@@ -1,0 +1,134 @@
+This is the description of the screensaver modules
+4colprob.ssm, bounce.ssm, golife.ssm, numlock.ssm and space.ssm.
+
+I release these modules as FreeWare and without any warranty
+of any kind and so on. Please read the note below concerning
+the module numlock.ssm (Numlock Blinker), and please don't tell me
+that I haven't warned you!
+
+If anybody is interested in the sources, please feel free to
+contact me.
+
+Any comments, suggestions or bug reports are welcome. You can
+contact me as follows:
+
+eMail (InterNet): Nicole.Greiber@Fernuni-Hagen.de
+
+or Snail Mail:
+
+Nicole Greiber
+Brueningstr. 6
+42119 Wuppertal
+Germany
+
+Below you find a short description of the modules. Please read at least
+the first one (Numlock Blinker) because it's a bit tricky to handle.
+
+
+numlock.ssm (Numlock Blinker):
+	When this module is active, you will not see anything on the screen -
+	but watch your keyboard!
+
+	CAUTION: 
+	You should not stop this module by pressing Num Lock, Scroll
+	Lock or Shift because then the key may change its mode. This is not
+	my fault because when the module is started, it saves the state of
+	the lamps, and before it exits it restores this state. But when the
+	state of a key is changed in between, the module will still restore 
+	the lamp's state as it was at start time because the main ssaver 
+	program only notifies the module that a key was pressed but not 
+	which one.
+	If you already ran into trouble due to this problem, you can do the
+	following:
+	If you have problems with the Caps lock key, just toggle it one or two
+	times. It will then work fine.
+	If one of the two other keys causes a problem, just run the module
+	and stop it with that key once again. The procedure will
+	be reverted and everything's fine again.
+	(This worked at least in my case. If it doesn't help you, 
+	re-IPL and pray :-) )
+
+golife.ssm	(Game Of Life):
+	This module displays the game of life. You can either select
+	a random population to start with, or a "Gleiterkanone".
+	The principle is that the screen is divided into cells. In the
+	"Module Configuration" window you can select how many cells will
+	be displayed in the horizontal direction. The more cells there
+	are, the slower the animation will be. Every cell has 8 neighbors,
+	like this:
+					NNN
+					NCN
+					NNN
+
+	where C is the cell and N are the neighbors. When a dead cell has
+	three neighbors that are "alive" (displayed white), it will
+	also come to life. If a living cell has two or three living neighbors,
+	it will stay alive. If there are more or less living neighbors, it 
+	will stay dead or die.
+
+	The "Gleiterkanone" (glider cannon) is a special kind of "animal": 
+	It always returns to its original shape, and it produces little
+	"gliders" that flap across the screen.
+	
+	When the random screen becomes static, i. e. there is no movement
+	except for objects that repeat within two or three cycles,
+	living cells will be "injected" randomly after 100 redraws 
+	to bring the picture to life again.
+	Note: Up to now I'm only checking for objects that repeat in two
+	or three cycles. If anybody finds objects that repeat with a 
+	different number of cycles, let me know, and I will check 
+	this number too.
+
+
+4colprob.ssm (4 Colour-Problem):
+	This module was inspired by the article "Dreiecksgeschichten" 
+	by Dr.-Ing. Reinhard Ludwig, which was published in the german 
+	computer magazine "c't", April 1994, pp. 220. The article included a 
+	Pascal program. I translated it to C and modified it slightly.
+
+	This module represents a well-known mathematical problem: to colour
+	a given map with 4 colours so that two neighbouring fields always
+	have different colours. 
+	For this problem a map is needed, therefore several steps are necessary:
+
+	First, a number of random points is created (the number can be varied
+	between 5 and 75 in the "Module Configuration" window). Then the
+	screen is triangulated, that means the given points are used to
+	create triangles (this is called Delaunay-Triangulation). 
+
+	After that the screen is divided into sections, of which every 
+	section encloses one of the random points and every pel on the screen 
+	that is closer to the random point than to any of the other random points 
+	(this is called a Voronj-diagram). This diagram represents the map to be
+	coloured. 
+
+	You will notice that there may be five colours: red, blue, green,
+	yellow and light blue. The light blue fields are "wrongly-coloured" 
+	fields, and after all fields have been coloured, the light blue 
+	fields will be eliminated one after the other by swapping colours with
+	one of their neighbouring fields and thus finding a field where only three
+	colours are represented in the neighbouring fields. Then this field
+	can get the fourth colour, and the light blue colour is no longer
+	needed. When all "wrong" fields have changed their colours, the process
+	is terminated and you can see a map that is coloured according to the
+	4 colour-problem. 
+	Sometimes the light blue can't be eliminated at the first attempt. 
+	Then the whole map is coloured anew, and the program tries again.
+
+bounce.ssm (Bouncing Line):
+	Here you see a bouncing line that changes its colours. You can select
+	how many lines will be visible and how many lines will be coloured in
+	the same colour. On startup, the screen can be painted black or left
+	as it is.
+
+space.ssm (Space Flight):
+	You will fly through space, the final frontier! Choose speed and
+	star density as you like. When this module is run with
+	"Low Priority" unchecked, the animation will be smoother.
+
+
+Enjoy!
+
+Nicole Greiber
+
+

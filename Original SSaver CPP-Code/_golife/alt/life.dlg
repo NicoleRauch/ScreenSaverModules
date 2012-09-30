@@ -1,0 +1,34 @@
+DLGINCLUDE 1 "life.h"
+
+DLGTEMPLATE IDD_CONFIGURE LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "Module configuration", IDD_CONFIGURE, 42, 18, 180, 123, 
+            WS_VISIBLE, FCF_TITLEBAR
+    BEGIN
+        CONTROL         "", IDC_SPEED, 103, 7, 44, 32, WC_SLIDER, 
+                        SLS_HORIZONTAL | SLS_VERTICAL | SLS_CENTER | 
+                        SLS_LEFT | SLS_SNAPTOINCREMENT | SLS_HOMELEFT | 
+                        SLS_PRIMARYSCALE1 | WS_GROUP | WS_TABSTOP | 
+                        WS_VISIBLE
+                        CTLDATA 12, 0, 5, 0, 0, 0
+        LTEXT           "Animation speed", IDC_SPEEDTEXT, 101, 43, 75, 8, 
+                        NOT WS_GROUP
+        LTEXT           "ScreenSaver module", -1, 37, 107, 118, 8
+        DEFPUSHBUTTON   "OK", IDS_MODULENAME, 9, 7, 40, 14
+        PUSHBUTTON      "Cancel", IDC_CANCEL, 53, 7, 40, 14
+        AUTOCHECKBOX    "Module enabled", IDC_ENABLED, 9, 28, 80, 10, 
+                        WS_GROUP
+        ICON            IDR_ICON, -1, 9, 99, 20, 16, WS_GROUP
+        AUTORADIOBUTTON """Gleiterkanone""", IDC_GLEITER, 9, 57, 77, 10, 
+                        WS_TABSTOP
+        AUTORADIOBUTTON "Random", IDC_RANDOM, 9, 46, 54, 10, WS_TABSTOP
+        LTEXT           "(C) 1994 Nicole Greiber", 3005, 37, 99, 123, 8
+                        PRESPARAMS PP_FOREGROUNDCOLOR, 0x00FF0000L
+        CONTROL         "", IDC_NUMBER, 95, 78, 41, 12, WC_SPINBUTTON, 
+                        SPBS_ALLCHARACTERS | SPBS_NUMERICONLY | SPBS_MASTER | 
+                        SPBS_SERVANT | SPBS_JUSTDEFAULT | SPBS_JUSTRIGHT | 
+                        WS_GROUP | WS_TABSTOP | WS_VISIBLE
+        LTEXT           "Number of cells in", -1, 10, 82, 82, 8
+        LTEXT           "horizontal direction", -1, 10, 75, 84, 8
+    END
+END

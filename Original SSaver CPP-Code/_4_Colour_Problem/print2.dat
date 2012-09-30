@@ -1,0 +1,539 @@
+void	draw_thread(void *args)
+{
+	static INT np;						// number of random points
+	static INT npp;					// = np + 4, including convex hull
+	static POINTL *StartP;		// array for the random points
+	static POINTL *VoronjP;	// array for the Voronj points
+	static unsigned char **LL, **VV;	// neighbor lists for StartP and VoronjP
+	static INT ip;						// actual index for the Voronj points
+	static unsigned char *Queue;			// queue for the triangulation
+	static INT *Farbe;			// array for the color of each point
+	static INT Skala[6] =			// array for the possible field colors
+		{ CLR_BLACK, CLR_RED, CLR_BLUE, CLR_YELLOW, CLR_DARKGREEN, CLR_CYAN};
+
+	RECTL pt = {0, 0, screenSizeX, screenSizeY };
+											// screen rectangle for blanking
+	INT animation_sleep = 4 - configuration_data.animation_speed;
+
+	// the arrays are created as pointers to allow dynamic sizing
+	
+// Subroutines /////////////////////////////////////////////////
+
+	inline INT Sleep( INT dur )		// sleeps only if the saver stays active
+									// returns FALSE if the saver is interrupted
+	{
+		for(; dur > 0 && !stop_draw_thread; dur -= 10 )
+			DosSleep( 10 );
+		return !stop_draw_thread;
+	}
+
+
+	VOID DrawPoint( POINTL p, INT Farbe )
+			// draws a point 3 pels high and wide
+	{
+		RECTL r = {p.x - 1, p.y - 1, p.x + 2, p.y + 2};
+		WinFillRect( hps, &r, Farbe);
+	}
+
+	void DataCreation()	// creates np random points and 4 fixed corner p.
+	{
+		INT i;
+
+		for( i = 1; i <= np; i++ ){
+			do{
+				StartP[i].x = rand() % (screenSizeX - 2) + 1;	
+				StartP[i].y = rand() % (screenSizeY - 2) + 1;
+												//  0 < points < screenSize? - 1
+			} while ( GpiQueryPel ( hps, &StartP[i] ) == CLR_WHITE );
+			DrawPoint( StartP[i] , CLR_WHITE );
+		}	// produces np random points
+
+		StartP[np + 1].x = StartP[np + 3].x = screenSizeX / 2;
+		StartP[np + 1].y = StartP[np + 4].x = -5000;
+		StartP[np + 2].x = StartP[np + 3].y = 5000;
+		StartP[np + 2].y = StartP[np + 4].y = screenSizeY / 2;
+	}
+
+
+	double Theta( POINTL p1, POINTL p2 )
+	{
+		INT dx, dy, axy;
+		double t;
+		dx = p2.x - p1.x;
+		dy = p2.y - p1.y;
+		axy = abs( dx ) + abs( dy );
+		if( !axy ){
+			t = 0;
+		} else {
+			t = (double)dy / (double)axy;
+		}
+		if( dx < 0){
+			t = 2 - t;
+		} else {
+			if( dy < 0 ) t += 4;
+		}
+		return ( t * 90 );
+	}
+	
+	inline INT Drehsinn( POINTL p1, POINTL p2, POINTL p3 )
+	// returns 1 if rotation is clockwise
+	{
+		INT d = (p2.y - p1.y) * (p2.x + p1.x) + (p3.y - p2.y) * (p3.x + p2.x)
+			+ (p1.y - p3.y) * (p1.x + p3.x);
+
+		return ( !d ? 0 : (d<0 ? -1 : 1) );
+	}
+
+	inline double SqDist( POINTL p1, POINTL p2 )	// square dist of p1 - p2
+	{
+		return (p1.x - p2.x)*( p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y);
+	}
+
+	double Rho( POINTL p1, POINTL p2, POINTL p3 )
+	// returns diameter of surrounding circle
+	{
+		double r, s, z, a, b, c;
+		a = sqrt( SqDist(p1, p2) );
+		b = sqrt( SqDist(p2, p3) );
+		c = sqrt( SqDist(p1, p3) );
+		s = 0.5 * (a + b + c);
+		z = s * (s - a)*(s - b)*(s - c);
+		if( z < 0.0001){
+			r = 5000;
+		} else {
+			r = 0.25 * a*b*c / sqrt(z);
+		}
+		if( r > 5000) r = 5000;
+		return r;
+	}
+	
+	inline double Cosgam( POINTL p1, POINTL p2, POINTL p3 )
+	{
+		double a = SqDist(p1, p3),
+				 b = SqDist(p2, p3);
+		return (a + b - SqDist(p1, p2) )/sqrt(a * b);
+	}
+
+	VOID SaveVoronjPoint( unsigned char i, unsigned char j,
+										unsigned char k, POINTL pv )
+		// adds the index of the Voronjpoint to the voronjpoint-lists of each
+		// of the three points that constitute the triangle
+		// improved version: checks if the point already exists and only
+		// saves it once
+	{
+		unsigned char ch;
+		int itest;
+		BOOL found = FALSE;
+		for( itest = 1; itest <= ip; itest++)
+			if( pv.x == VoronjP[itest].x && pv.y == VoronjP[itest].y ){
+				found = TRUE;
+				break;
+			}
+		if( !found ){	// current VoronjPoint is a new one
+			VoronjP[++ip] = pv;
+			ch = ip;
+			strncat( VV[i], &ch, 1);	
+			strncat( VV[k], &ch, 1);	
+			strncat( VV[j], &ch, 1);
+		} else {	// append VoronjPoint-index to neighbourlist if necessary
+			ch = itest;
+			if( strchr( VV[i], ch ) == NULL )
+				strncat( VV[i], &ch, 1);	
+			if( strchr( VV[k], ch ) == NULL )
+				strncat( VV[k], &ch, 1);	
+			if( strchr( VV[j], ch ) == NULL )
+				strncat( VV[j], &ch, 1);
+		}
+	}
+
+	BOOL FindPoint( unsigned char k, unsigned char l, unsigned char *m )
+	{
+		BOOL found = FALSE;
+		unsigned char a; 
+		double dx1, dy1, cq, r, w, min = 2;
+		POINTL p1, p2, p3;
+
+		p1 = StartP[k];
+		p2 = StartP[l];
+		
+		for( a = 1; a <= npp; a++) {
+			if( (a != k) && (a != l) && (Drehsinn( p1, p2, StartP[a] ) == 1)){
+				w = Cosgam(p1, p2, StartP[a]);
+				if ( w < min ){
+					min = w;
+					*m = a;
+					p3 = StartP[a];
+					found = TRUE;
+				}
+			}	
+		}	// for
+		if( found && strchr( LL[k], *m ) == NULL
+					 && strchr( LL[l], *m ) == NULL ){
+			dx1 = p2.x - p1.x;
+			dy1 = p2.y - p1.y;
+			cq = dx1*dx1 + dy1*dy1;
+			r = Rho( p1, p2, p3 );
+			w = sqrt( fabs( r*r/cq - 0.25 ));
+			if( min < 0) w = -w;
+			// now p2 turns into the VoronjPoint:
+			p2.x = (INT) rint(0.5*dx1 - dy1*w + p1.x);	
+			p2.y = (INT) rint(0.5*dy1 + dx1*w + p1.y);
+			SaveVoronjPoint( k, l, *m, p2 );
+		}
+		return found;
+	}
+
+	VOID Triangle()
+	{
+		unsigned char i, j, k;
+		i = Queue[0];
+		j = Queue[1];
+		strcpy( Queue, &Queue[2] );
+		if( strchr( LL[i], j) == NULL){
+			if( i <= np && j <= np ){
+				strncat( LL[i], &j, 1);
+				strncat( LL[j], &i, 1);
+				GpiMove( hps, &StartP[i] );
+				GpiLine( hps, &StartP[j]);
+			}
+			if( FindPoint( i, j, &k ) && k <= np){
+				strncat( Queue, &k, 1);
+				strncat( Queue, &j, 1);
+				strncat( Queue, &i, 1);
+				strncat( Queue, &k, 1);
+			}
+		}
+	}
+	
+	VOID DelaunayTriangulation()
+	{
+		unsigned char i;
+
+		ip = 0;
+		for( i = 0; i <=npp; i++ ){
+			VV[i][0] = LL[i][0] =  '\0';
+			// must be initialized up to npp because the last strings are
+			// accessed for comparison
+		}
+		// initialize the queue with the points of the convex hull
+		Queue[7] = Queue[0] = np + 1;
+		Queue[2] = Queue[1] = np + 2;
+		Queue[4] = Queue[3] = np + 3;
+		Queue[6] = Queue[5] = np + 4;
+		Queue[8] = '\0';
+
+		GpiSetColor( hps, CLR_PINK);
+		while( strlen( Queue ) > 0 ) Triangle();	
+	}
+
+	
+	VOID OrderPointLists()
+	{
+		POINTL ptl;
+		unsigned char i, j, k, l, m, test, q, size, io[20], Satz[20];
+		double w[20];				// array for sorting purposes
+
+		// 20 is enough for the arrays because the VV-strings only have size 20
+
+		VOID Sort( INT li, INT re )	
+		{
+			INT i = li, j = re, tmp;
+			double value = w[io[(li + re) / 2]];
+
+			do{
+				while( w[io[i]] < value) i++;
+				while( w[io[j]] > value) j--;
+				if( i <= j){
+					tmp = io[i];
+					io[i] = io[j];
+					io[j] = tmp;
+					i++;
+					j--;
+				}
+			} while (i <= j);
+			if (li < j) Sort( li, j);
+			if ( i < re) Sort( i, re );
+		}	// VOID Sort()
+
+		for( i = 1; i <= np; i++)
+		{
+			l = strlen( VV[i] );
+			for( j = 0; j < l; j++ ) io[j] = j;
+			for( j = 0; j < l; j++){
+				w[j] = Theta( StartP[i], VoronjP[ (INT)VV[i][j] ] );
+			}
+			Sort( 0, l-1 );
+				// reorder the elements in VV[i] => adjust them according to angle
+			for(j = 0; j < l; j++){
+				Satz[j] = VV[i][io[j]];
+			}
+			for(j = 0; j < l; j++){
+				VV[i][j] = Satz[j];
+			}
+		}	// end for i
+
+
+		// clear the neighborlist from wrong neighbors at the edges:
+		// when two StartPoints only share VoronjPoints that are off the
+		// screen, then they are no neighbors though they behave as if they
+		// were. Therefore these "wrong" neighbors are found out and their
+		// neighboring relationship is eliminated
+
+		for( i = 1; i <= np; i++){	// from LL[1] to LL[np]
+			l = strlen( LL[i] );
+			for( j = 0; j < l; j++ ){	// from LL[i][0] to LL[i][l-1]
+				k = LL[i][j];	// i and k should be neighbors, that means they
+									// have to share at least one Voronj point
+				test = 0;
+				q = 0;
+				size = strlen( VV[k] );
+				while( q < size && !test ){
+					if( strchr( VV[i], VV[k][q] ) != NULL ){
+						// found a common Voronj point
+						ptl = VoronjP[ VV[k][q] ];
+						// check if the point is visible:
+						if( ptl.x > 0 && ptl.y > 0 && ptl.x < screenSizeX
+										  && ptl.y < screenSizeY )
+							test = 1;
+					}
+					q++;
+				}
+				if( !test ){	// i and k don't share any visible Voronj points
+					strcpy( &LL[i][j], &LL[i][j+1] );
+						// delete k from i's neighborlist
+					m = 0;
+					while( LL[k][m] != i ) m++;	// search i in k's neighborlist
+					strcpy( &LL[k][m], &LL[k][m+1]);	// and delete it
+					l--;	// length of LL[i] has decreased
+				}	// end if !test
+			}	// end for j
+		}	// end for i
+		
+	}	// end OrderPointLists
+
+	VOID VoronjDiagram( INT Color )
+	{
+		unsigned char i, j, l;
+		POINTL pt = { 0, 0 };
+		GpiSetColor( hps, Color );
+		GpiSetLineType( hps, LINETYPE_DEFAULT );
+		for( i = 1; i <= np; i++){
+			l = strlen( VV[i] );	
+			GpiMove( hps, &VoronjP[ (INT)VV[i][l-1] ] );
+			for( j = 0; j < l; j++)
+				GpiLine( hps, &VoronjP[ (INT)VV[i][j] ] );
+		}
+		// draw a border
+		GpiMove( hps, &pt );
+		pt.x = screenSizeX - 1;
+		GpiLine( hps, &pt );
+		pt.y = screenSizeY - 1;
+		GpiLine( hps, &pt );
+		pt.x = 0;
+		GpiLine( hps, &pt );
+		pt.y = 0;
+		GpiLine( hps, &pt );
+	}
+
+
+	inline VOID PaintField( unsigned char index, INT Color )
+	{
+		unsigned char j, l = strlen( VV[index] );
+
+		Sleep( 30 * animation_sleep );
+		GpiSetColor( hps, Color );
+		Farbe[index] = Color;
+		GpiBeginPath( hps, 1L );
+		GpiMove( hps, &VoronjP[ VV[index][l - 1] ] );
+		for( j = 0; j < l; j++ )
+			GpiLine( hps, &VoronjP[ VV[index][j] ] );
+		GpiEndPath( hps );
+		GpiFillPath( hps, 1L, BA_ALTERNATE );	
+	}
+
+	inline BOOL FarbeHasColor( unsigned char *index, INT Color )
+	{
+		unsigned char j = 0, upto = strlen( index );
+
+		for(; j < upto && Farbe[*index++] != Color; j++ );
+		return (j != upto);
+	}
+
+	VOID FirstPaint( unsigned char i)
+	{
+		unsigned char j, k, l;
+
+		if( i > np ) i = 1;
+		for( j = 1; j <= npp; j++ ) Farbe[j] = CLR_BLACK;	// init Farbe
+		do{
+			PaintField( i, Skala[1] );	// first field can always have color 1
+			l = strlen( LL[i] );
+			for( j = 0; j < l; j++ ){
+				if( Farbe[ (INT)LL[i][j] ] == CLR_BLACK ){
+													// field is yet to be painted
+					k = 1;	// red can be left out because i is already red
+					while( ++k < 5 && FarbeHasColor(LL[ LL[i][j] ], Skala[k]) );
+						// now searches the environment of point LL[i][j]
+					PaintField( LL[i][j], Skala[k] );
+				}
+			}
+			i = 0;
+			while( Farbe[++i] != CLR_BLACK );
+									// searches the next uncolored field
+		} while ( i <= np );
+	}
+
+
+	inline BOOL ColorIsAt( unsigned char from, unsigned char to, INT Color,
+						 unsigned char *here)
+	{
+		for(; from <= to && Farbe[from] != Color; from++ );
+		*here = from;
+		return from <= to;
+	}
+
+
+	VOID SwapColors( unsigned char* m )
+	{
+		unsigned char i, j, k, l;
+		INT Satz[20], Test[20], testlen, pos, Col;
+
+		// 20 is enough for the arrays because the LL-strings only have size 20
+
+		k = *m;
+		testlen = l = strlen( LL[k] );
+		for( j = 0; j < l; j++)
+			Satz[j] = Farbe[ (INT)LL[k][j] ]; // contains the neighbors' colors
+		Satz[l] = CLR_BLACK;			// condition to interrupt
+		for( j = 0; j <= l; j++) Test[j] = Satz[j];	// Test must be modified
+		pos = 0;
+		do
+		{
+			Col = Test[0];
+			for( j = 0; j < testlen; j++)
+				Test[j] = Test[ j + 1 ];
+					// because the last entry of Test contains CLR_BLACK
+			testlen--;
+			while( pos != testlen && Test[pos] != Col ) pos++;
+			if( pos != testlen )	// another neighbour has got colour Col 
+			{
+				while ( pos != testlen )
+				{		// all appearances of Col are deleted from Test
+					for( i = pos; i < testlen; i++ ) Test[i] = Test[i+1];
+					testlen--;
+					while( Test[pos] != Col && pos != testlen) pos++;	// search again
+				}
+				pos = 0;	// to prevent an accidental interrupt
+			}
+		} while( Test[0] != CLR_BLACK && pos != testlen );
+	// while there are still colors in Test and a color doesn't appear only once
+		if( pos == testlen )
+		{	// found a color that appears only once ...
+			for( i = 0; Satz[i] != Col; i++);
+			*m = LL[k][i];		// ... that is here
+			for( j = i; j < l - 1; j++ ) LL[k][j] = LL[k][j+1];
+			LL[k][l-1] = *m;
+			// remove field from LL[k] and add it at the end to provide
+			// a different sequence when this field is checked again
+			PaintField( k, Col );
+			PaintField( *m, CLR_CYAN );
+			k = 1;
+			while( k < 5 && FarbeHasColor( LL[*m], Skala[k] ) ) k++;
+			// check all neighbours' colors and paint the field in an unused color
+			PaintField( *m, Skala[k] );
+		}
+	}
+
+	VOID Reduce()
+	{
+		unsigned char Hist[256], Wort[16], Start[npp], *Lauf, m;
+
+		Lauf = Start;
+		*Lauf++ = '0';		// Start[0] is not needed
+		*Lauf++ = '0';		// Start[1] has been used for the first coloring
+		for( m = 2; m <= np; m++) *Lauf++ = 'a';	// unused start fields
+		*Lauf = '\0';
+		
+		Wort[0] = Hist[0] = '\0';	// delete track
+		
+		while( ColorIsAt( 1, np, CLR_CYAN, &m ) )
+		{
+			if( stop_draw_thread ) return;	// if saver is interrupted
+			SwapColors(&m);	// wrong color found
+			strncat(Wort, &m, 1);	// m has stayed the same or has got the
+						// index of the next field that has been painted light blue
+			if( strlen( Wort) > 10 )
+			{
+				strncat( Hist, &Wort[0], 1 );	// write first Wort-entry to Hist ...
+				strcpy( Wort, &Wort[1] );	// ... and delete it from Wort
+				if( strlen( Hist) > 250)		// shorten Hist if necessary
+					strcpy( Hist, &Hist[1] );
+			}
+			if ( strstr( Hist, Wort ) != NULL )
+			{	// endless loop: Hist contains Wort
+				if( strchr( Start, 'a' ) == NULL ) return;	// nothing else possible
+				if( Start[m] == '0' )	// this point has already been used to start
+					for ( m = 2; Start[m] != 'a'; m++);
+						// search first field that has not been used yet for a start
+				Start[m] = '0';
+				FirstPaint(m);
+				Wort[0] = Hist[0] = '\0';	// initialize track anew
+			}
+		}	// end while( ColorIsAt ... )
+	}
+
+// End of Subroutines /////////////////////////////////////////
+
+	// random seed (needed for each thread)
+	srand(WinGetCurrentTime(hab));
+
+	npp = configuration_data.number + 4;
+		// includes the 4 points of the convex hull
+	
+	if( !(Queue = (unsigned char*)malloc( 256 * sizeof(unsigned char))) ) stop_draw_thread = TRUE;
+	if(!(LL = (unsigned char**)malloc( (npp+1) * sizeof(unsigned char*))) ) stop_draw_thread = TRUE;
+	if(!(VV = (unsigned char**)malloc( (npp+1) * sizeof(unsigned char*))) ) stop_draw_thread = TRUE;
+	for( np = 0; np <= npp && !stop_draw_thread; np++ ){
+		if(!(LL[np] = (unsigned char*)malloc( 20 * sizeof(unsigned char))) ) stop_draw_thread = TRUE;
+		if(!(VV[np] = (unsigned char*)malloc( 20 * sizeof(unsigned char))) ) stop_draw_thread = TRUE;
+	}	// I use np because it is an existing and here unused variable
+	if( !(StartP = (POINTL*)malloc( (npp+1) * sizeof(POINTL))) ) stop_draw_thread = TRUE;
+	if( !(VoronjP = (POINTL*)malloc( npp * 2 * sizeof(POINTL))) ) stop_draw_thread = TRUE;
+	if( !(Farbe = (INT*)malloc( (npp+1) * sizeof(INT))) ) stop_draw_thread = TRUE;
+
+	np = configuration_data.number;	// from here on np is fixed
+
+	while(!stop_draw_thread){
+
+		WinFillRect( hps, &pt, CLR_BLACK );
+		GpiSetColor( hps, CLR_WHITE );
+
+		DataCreation();
+		if( Sleep( 800 + 200 * animation_sleep ) ){
+			DelaunayTriangulation();		
+			if( Sleep( 800 + 200 * animation_sleep ) ){
+				OrderPointLists();
+				if(!stop_draw_thread){
+					VoronjDiagram( CLR_CYAN );
+					if( Sleep( 800 + 200 * animation_sleep ) ){
+						FirstPaint(1);	
+						if( Sleep( 400 + 100 * animation_sleep ) ){
+							Reduce();
+							Sleep( 2500 + 500 * animation_sleep );
+						}
+					}
+				}
+			}
+		}
+
+		// sleep if necessary
+		if(low_priority == FALSE)
+			DosSleep(1);
+
+	}	/*	stop_draw_thread	*/
+
+	// free resources
+
+	_endthread();
+}
+

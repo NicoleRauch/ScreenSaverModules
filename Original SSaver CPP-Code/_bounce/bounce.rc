@@ -1,0 +1,22 @@
+/*
+	bounce.rc
+	Bouncing Line saver module resource script file
+	(C) 1993-94 Siegfried Hanisch, (C) 1994 Nicole Greiber
+*/
+
+#include <os2.h>
+#include "bounce.h"
+
+ICON	IDR_ICON	"bounce.ico"
+
+/*
+	$$$$$ change code here $$$$$
+	Replace "Sample module" with a module name of your choice.
+	The module name must not exceed 32 characters.
+	Include the module *.DLG-file.
+*/
+STRINGTABLE
+{
+	IDS_MODULENAME	"Bouncing Line"
+}
+RCINCLUDE bounce.dlg

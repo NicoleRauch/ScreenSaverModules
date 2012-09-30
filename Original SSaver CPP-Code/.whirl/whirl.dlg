@@ -1,0 +1,30 @@
+DLGINCLUDE 1 "whirl.h"
+
+DLGTEMPLATE IDD_CONFIGURE LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "Module configuration", IDD_CONFIGURE, 42, 18, 180, 114, 
+            WS_VISIBLE, FCF_TITLEBAR
+    BEGIN
+        CONTROL         "", IDC_SPEED, 104, 6, 44, 32, WC_SLIDER, 
+                        SLS_HORIZONTAL | SLS_VERTICAL | SLS_CENTER | 
+                        SLS_LEFT | SLS_SNAPTOINCREMENT | SLS_HOMELEFT | 
+                        SLS_PRIMARYSCALE1 | WS_GROUP | WS_TABSTOP | 
+                        WS_VISIBLE
+                        CTLDATA 12, 0, 5, 0, 0, 0
+        LTEXT           "Animation speed", IDC_SPEEDTEXT, 9, 30, 82, 8, NOT 
+                        WS_GROUP
+        LTEXT           "ScreenSaver module", -1, 37, 100, 118, 8
+        LTEXT           "(C) 1993-94 Siegfried Hanisch", -1, 37, 92, 136, 8, 
+                        NOT WS_GROUP
+        DEFPUSHBUTTON   "OK", IDS_MODULENAME, 12, 6, 40, 14
+        PUSHBUTTON      "Cancel", IDC_CANCEL, 54, 6, 40, 14
+        AUTOCHECKBOX    "Module enabled", IDC_ENABLED, 9, 42, 118, 10, 
+                        WS_GROUP
+        ICON            IDR_ICON, -1, 9, 92, 20, 16, WS_GROUP
+        LTEXT           "(C) 1994 Nicole Greiber", -1, 37, 84, 129, 8
+        AUTORADIOBUTTON "Rotation clockwise", IDC_CLOCK, 9, 67, 92, 10, 
+                        WS_TABSTOP
+        AUTORADIOBUTTON "Rotation counterclockwise", IDC_COUNTER, 9, 57, 136, 
+                        10, WS_TABSTOP
+    END
+END

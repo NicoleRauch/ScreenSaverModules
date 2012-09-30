@@ -1,0 +1,31 @@
+DLGINCLUDE 1 "space.h"
+
+DLGTEMPLATE IDD_CONFIGURE LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "Module configuration", IDD_CONFIGURE, 42, 18, 180, 100, 
+            WS_VISIBLE, FCF_TITLEBAR
+    BEGIN
+        CONTROL         "", IDC_COUNT, 91, 58, 30, 12, WC_SPINBUTTON, 
+                        SPBS_ALLCHARACTERS | SPBS_NUMERICONLY | SPBS_MASTER | 
+                        SPBS_SERVANT | SPBS_JUSTDEFAULT | SPBS_JUSTRIGHT | 
+                        WS_GROUP | WS_TABSTOP | WS_VISIBLE
+        LTEXT           "Number of Stars", -1, 12, 60, 73, 8
+        CONTROL         "", IDC_SPEED, 104, 6, 44, 32, WC_SLIDER, 
+                        SLS_HORIZONTAL | SLS_VERTICAL | SLS_CENTER | 
+                        SLS_LEFT | SLS_SNAPTOINCREMENT | SLS_HOMELEFT | 
+                        SLS_PRIMARYSCALE1 | WS_GROUP | WS_TABSTOP | 
+                        WS_VISIBLE
+                        CTLDATA 12, 0, 5, 0, 0, 0
+        LTEXT           "Animation speed", IDC_SPEEDTEXT, 101, 41, 72, 8, 
+                        NOT WS_GROUP
+        LTEXT           "ScreenSaver module", -1, 40, 84, 118, 8
+        LTEXT           "(C) 1994 Nicole Greiber", -1, 40, 76, 136, 8, NOT 
+                        WS_GROUP
+                        PRESPARAMS PP_FOREGROUNDCOLOR, 0x00FF0000L
+        DEFPUSHBUTTON   "OK", IDS_MODULENAME, 12, 6, 40, 14
+        PUSHBUTTON      "Cancel", IDC_CANCEL, 54, 6, 40, 14
+        AUTOCHECKBOX    "Module enabled", IDC_ENABLED, 12, 26, 84, 10, 
+                        WS_GROUP
+        ICON            IDR_ICON, -1, 12, 76, 20, 16, WS_GROUP
+    END
+END

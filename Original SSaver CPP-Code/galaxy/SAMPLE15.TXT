@@ -1,0 +1,95 @@
+Hi ScreenSaver module developer!
+================================
+
+This is version 1.5 of the sample ScreenSaver module.
+
+
+Changes version 1.4 - > 1.5
+---------------------------
+code added to read from an alternate INI file instead of OS2.INI:
+  functions query_profile_data() and write_profile_data()
+  FUNCTION_SETINIFILENAME in SAVER_PROC(...)
+code added to move saver window to top regularly (IDT_ZORDERTIMER)
+
+
+Changes version 1.3 - > 1.4
+---------------------------
+no changes.
+
+
+Changes version 1.2 - > 1.3
+---------------------------
+no changes.
+
+
+Changes version 1.1 - > 1.2
+---------------------------
+
+There is a problem with OS/2 2.11 (to me it seems to be an OS/2 bug) which
+causes ScreenSaver to exit whenever a version 1.1 module ends. This problem
+is corrected in version 1.2. Unfortunately the problem had to be corrected in
+the module source code. The problem only occurs when "low priority" is enabled.
+(To those who are interested: the DosKillThread call kills thread 1 (the main
+thread) instead of the priority-controller-thread. Seems to be a bad bug in
+OS/2 2.11).
+The ScreenSaver program now checks if we run on OS/2 2.11 and if the modules
+is a version 1.1 module. If this is true, it runs the module with high
+priority although low priority may be selected in the options dialog.
+Animation speed setting added.
+Random seed now per thread.
+*.DEF file changed
+
+
+Changes version 1.0 - > 1.1
+---------------------------
+
+There are some minor enhancements to the original code.
+There is limited support for compiling with Borland C++ now. See below for
+more info on that.
+The old (version 1.0) code STILL WORKS. The code that was added since
+version 1.0 should solve the idle-priority problem that prevented the saver
+modules from doing their action when CPU usage of other programs was 100%.
+Most of the changes are to avoid compiler warnings from Borland C++.
+
+It should not be too much work to incorporate the changes in SAMPLE.C if
+you have written code for version 1.0.
+I suggest you cut your code and paste it into the new SAMPLE.C. An utility
+like "Visual Compare" (all/diskutil/vc132.zip on ftp.cdrom.com) might be very
+useful for that.
+
+
+Compiling with Borland C++
+--------------------------
+
+Because of initialization problems with the Borland C runtime library (RTL),
+you MUST NOT use ANY RTL-functions (malloc, free, strcpy, _beginthread, srand,
+rand, fopen, open, printf etc.).
+In the file MINIRTL.C you can find some useful C library functions as source
+code. If you link your module with MINIRTL.OBJ, you can use those
+functions in your module. DO NOT use any other rtl functions. DO NOT link
+your module with one of the Borland libraries (C2*.LIB) (OS2.LIB is ok).
+DO NOT link with the startup code supplied by Borland (C02*.OBJ). Use the
+startup code BCCDLL0.ASM instead.
+
+This seems rather complicated, but in fact all you have to do is uncomment
+the "USE_BCC=1" line in SAMPLE.MAK and type "MAKE -F SAMPLE.MAK".
+
+
+------------------------------------------------------
+
+If you are going to write saver modules, please get in contact with me.
+
+If you already have developed a module, please drop me a line where I can get
+it from. Better, uuencode the module and mail it to me.
+
+If you have any questions, just contact me via e-mail.
+
+Greetings
+
+Siegfried Hanisch
+Internet e-mail: hanisch@ci.tuwien.ac.at
+
+My e-mail address is going to change in a few months. If you can't reach me
+under the above address, please send a short e-mail to
+  p.wansch@ieee.org
+and ask him for my new address.

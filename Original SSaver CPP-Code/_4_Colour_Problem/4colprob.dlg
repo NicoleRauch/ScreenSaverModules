@@ -1,0 +1,34 @@
+DLGINCLUDE 1 "4colprob.h"
+
+DLGTEMPLATE IDD_CONFIGURE LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "Module configuration", IDD_CONFIGURE, 42, 18, 180, 116, 
+            WS_VISIBLE, FCF_TITLEBAR
+    BEGIN
+        CONTROL         "", IDC_NUMBER, 125, 54, 30, 12, WC_SPINBUTTON, 
+                        SPBS_ALLCHARACTERS | SPBS_NUMERICONLY | SPBS_MASTER | 
+                        SPBS_SERVANT | SPBS_JUSTDEFAULT | SPBS_JUSTRIGHT | 
+                        WS_GROUP | WS_TABSTOP | WS_VISIBLE
+        LTEXT           "Number of random points", -1, 12, 56, 109, 8
+        CONTROL         "", IDC_SPEED, 116, 4, 44, 32, WC_SLIDER, 
+                        SLS_HORIZONTAL | SLS_VERTICAL | SLS_CENTER | 
+                        SLS_LEFT | SLS_SNAPTOINCREMENT | SLS_HOMELEFT | 
+                        SLS_PRIMARYSCALE1 | WS_GROUP | WS_TABSTOP | 
+                        WS_VISIBLE
+                        CTLDATA 12, 0, 5, 0, 0, 0
+        LTEXT           "Animation speed", IDC_SPEEDTEXT, 103, 40, 74, 8, 
+                        NOT WS_GROUP
+        LTEXT           "ScreenSaver module", -1, 37, 101, 118, 8
+        LTEXT           "(C) 1994 Nicole Greiber", -1, 37, 92, 142, 9, NOT 
+                        WS_GROUP
+                        PRESPARAMS PP_FOREGROUNDCOLOR, 0x00FF0000L
+                        PRESPARAMS PP_FONTNAMESIZE, "12.HelvOK"
+        DEFPUSHBUTTON   "OK", IDS_MODULENAME, 12, 4, 40, 14
+        PUSHBUTTON      "Cancel", IDC_CANCEL, 54, 4, 40, 14
+        AUTOCHECKBOX    "Module enabled", IDC_ENABLED, 11, 30, 82, 10, 
+                        WS_GROUP
+        ICON            IDR_ICON, -1, 9, 93, 20, 16, WS_GROUP
+        LTEXT           "(based on a program by", -1, 37, 83, 128, 9
+        LTEXT           " Dr.-Ing. Reinhard Ludwig)", -1, 37, 75, 114, 8
+    END
+END

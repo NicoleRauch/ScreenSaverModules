@@ -1,0 +1,30 @@
+DLGINCLUDE 1 "numlock.h"
+
+DLGTEMPLATE IDD_CONFIGURE LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "Module configuration", IDD_CONFIGURE, 42, 18, 180, 111, 
+            WS_VISIBLE, FCF_TITLEBAR
+    BEGIN
+        CONTROL         "", IDC_SPEED, 104, 6, 44, 32, WC_SLIDER, 
+                        SLS_HORIZONTAL | SLS_VERTICAL | SLS_CENTER | 
+                        SLS_LEFT | SLS_SNAPTOINCREMENT | SLS_HOMELEFT | 
+                        SLS_PRIMARYSCALE1 | WS_GROUP | WS_TABSTOP | 
+                        WS_VISIBLE
+                        CTLDATA 12, 0, 5, 0, 0, 0
+        LTEXT           "Animation speed", IDC_SPEEDTEXT, 103, 42, 75, 8, 
+                        NOT WS_GROUP
+        LTEXT           "ScreenSaver module", -1, 38, 99, 118, 8
+        LTEXT           "(C) 1994 Nicole Greiber", -1, 38, 91, 136, 8, NOT 
+                        WS_GROUP
+                        PRESPARAMS PP_FOREGROUNDCOLOR, 0x00FF0000L
+        DEFPUSHBUTTON   "OK", IDS_MODULENAME, 12, 6, 40, 14
+        PUSHBUTTON      "Cancel", IDC_CANCEL, 54, 6, 40, 14
+        AUTOCHECKBOX    "Module enabled", IDC_ENABLED, 12, 26, 81, 10, 
+                        WS_GROUP
+        ICON            IDR_ICON, -1, 12, 91, 20, 16, WS_GROUP
+        LTEXT           "Blinking Pattern:", -1, 13, 75, 105, 8
+        CONTROL         "", IDC_COMBO, 13, 24, 139, 49, WC_COMBOBOX, 
+                        CBS_DROPDOWNLIST | WS_GROUP | WS_TABSTOP | 
+                        WS_VISIBLE
+    END
+END
